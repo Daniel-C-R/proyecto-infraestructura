@@ -1,0 +1,39 @@
+---
+- name: Actualizar cache de paquetes
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Instalar paquetes comunes
+  ansible.builtin.apt:
+    name: "{{ common_packages }}"
+    state: present
+
+- name: Configurar zona horaria
+  community.general.timezone:
+    name: "{{ common_timezone }}"
+
+- name: Crear usuario admin
+  ansible.builtin.user:
+    name: "{{ common_admin_user }}"
+    groups: "{{ common_admin_groups }}"
+    append: true
+    shell: /bin/bash
+    create_home: true
+    state: present
+
+- name: Crear usuario alumno sin sudo
+  ansible.builtin.user:
+    name: "{{ common_student_user }}"
+    shell: /bin/bash
+    create_home: true
+    groups: ""
+    append: false
+
+- name: Crear directorio de trabajo para administracion
+  ansible.builtin.file:
+    path: /opt/admin
+    state: directory
+    owner: "{{ common_admin_user }}"
+    group: "{{ common_admin_user }}"
+    mode: "0755"

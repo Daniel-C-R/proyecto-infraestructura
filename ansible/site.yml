@@ -1,0 +1,6 @@
+---
+- name: Configuracion comun a todas las maquinas
+  hosts: all
+  become: true
+  roles:
+    - common
