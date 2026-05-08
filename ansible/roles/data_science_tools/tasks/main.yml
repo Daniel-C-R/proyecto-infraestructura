@@ -1,0 +1,33 @@
+---
+- name: Instalar Python, pip y venv
+  ansible.builtin.apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+
+- name: Copiar requirements.txt al directorio de administración
+  ansible.builtin.copy:
+    src: requirements.txt
+    dest: /opt/admin/requirements.txt
+    owner: "{{ common_admin_user }}"
+    group: "{{ common_admin_user }}"
+    mode: "0644"
+
+- name: Instalar paquetes habituales en un entorno virtual
+  ansible.builtin.pip:
+    requirements: /opt/admin/requirements.txt
+    virtualenv: /opt/admin/venv
+    virtualenv_command: python3 -m venv
+    state: present
+
+- name: Activar env cuando el alumno inicie sesión
+  ansible.builtin.lineinfile:
+    path: /home/{{ common_student_user }}/.bashrc
+    line: "source /opt/admin/venv/bin/activate"
+    create: true
+    state: present
+    owner: "{{ common_student_user }}"
+    group: "{{ common_student_user }}"
+    mode: "0644"

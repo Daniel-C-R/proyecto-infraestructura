@@ -4,3 +4,10 @@
   become: true
   roles:
     - common
+
+- name: Configuracion para la asignatura de Ciencia de Datos
+  hosts: vm
+  become: true
+  roles:
+    - common
+    - data_science_tools
