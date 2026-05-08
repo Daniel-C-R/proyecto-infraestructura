@@ -1,0 +1,20 @@
+---
+- name: Instalar curl y dependencias básicas
+  ansible.builtin.apt:
+    name:
+      - curl
+      - git
+      - build-essential
+    state: present
+
+- name: Instalar Node.js y npm
+  ansible.builtin.apt:
+    name:
+      - nodejs
+      - npm
+    state: present
+
+- name: Instalar gestores de paquetes frontend globales (Yarn, pnpm)
+  ansible.builtin.command: npm install -g yarn pnpm
+  args:
+    creates: /usr/local/bin/yarn

@@ -11,3 +11,17 @@
   roles:
     - common
     - data_science_tools
+
+- name: Configuracion para la asignatura de Desarrollo Frontend
+  hosts: vm
+  become: true
+  roles:
+    - common
+    - frontend_tools
+
+- name: Configuracion para la asignatura de Bases de Datos
+  hosts: vm
+  become: true
+  roles:
+    - common
+    - mariadb

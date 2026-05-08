@@ -1,0 +1,33 @@
+---
+- name: Instalar MariaDB Server
+  ansible.builtin.apt:
+    name: mariadb-server
+    state: present
+
+- name: Asegurar que el servicio de MariaDB está iniciado y habilitado
+  ansible.builtin.systemd:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Instalar dependencia de Python para gestionar MariaDB
+  ansible.builtin.apt:
+    name: python3-pymysql
+    state: present
+
+- name: Crear usuario de MariaDB para los alumnos
+  community.mysql.mysql_user:
+    login_user: root
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: "{{ common_student_user | default('alumno') }}"
+    password: "{{ mariadb_student_password | default('alumno') }}"
+    host: "%"
+    priv: "*.*:ALL,GRANT"
+    state: present
+
+- name: Configurar MariaDB para permitir conexiones remotas (opcional)
+  ansible.builtin.lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: '^bind-address'
+    line: 'bind-address            = 0.0.0.0'
+  notify: Reiniciar MariaDB
