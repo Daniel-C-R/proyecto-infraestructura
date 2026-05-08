@@ -1,0 +1,15 @@
+plugin: openstack.cloud.openstack
+expand_hostvars: true
+fail_on_errors: true
+inventory_hostname: name
+only_ipv4: true
+private: true
+
+keyed_groups:
+  - prefix: subject
+    key: metadata.subject
+
+groups:
+  data_science: metadata.subject == 'data_science'
+  frontend: metadata.subject == 'frontend'
+  databases: metadata.subject == 'databases'

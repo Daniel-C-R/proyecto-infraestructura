@@ -1,0 +1,7 @@
+---
+- name: Configuracion para la asignatura de Bases de Datos
+  hosts: databases
+  become: true
+  roles:
+    - common
+    - mariadb

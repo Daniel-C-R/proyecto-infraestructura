@@ -1,0 +1,7 @@
+---
+- name: Configuracion para la asignatura de Ciencia de Datos
+  hosts: data_science
+  become: true
+  roles:
+    - common
+    - data_science_tools

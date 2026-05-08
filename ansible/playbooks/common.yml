@@ -1,0 +1,6 @@
+---
+- name: Configuracion comun a todas las maquinas gestionadas por OpenStack
+  hosts: all
+  become: true
+  roles:
+    - common

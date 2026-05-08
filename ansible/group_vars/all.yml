@@ -1,0 +1,24 @@
+---
+common_timezone: "Europe/Madrid"
+
+common_packages:
+  - curl
+  - wget
+  - git
+  - vim
+  - htop
+  - unzip
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - net-tools
+  - tree
+
+common_admin_user: "admin"
+common_admin_groups:
+  - sudo
+
+common_student_user: "alumno"
+
+ansible_user: "admin"
+ansible_ssh_private_key_file: "/Users/daniel/.ssh/id_uniovi"

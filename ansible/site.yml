@@ -1,27 +1,4 @@
 ---
-- name: Configuracion comun a todas las maquinas
-  hosts: all
-  become: true
-  roles:
-    - common
-
-- name: Configuracion para la asignatura de Ciencia de Datos
-  hosts: vm
-  become: true
-  roles:
-    - common
-    - data_science_tools
-
-- name: Configuracion para la asignatura de Desarrollo Frontend
-  hosts: vm
-  become: true
-  roles:
-    - common
-    - frontend_tools
-
-- name: Configuracion para la asignatura de Bases de Datos
-  hosts: vm
-  become: true
-  roles:
-    - common
-    - mariadb
+- import_playbook: playbooks/data_science.yml
+- import_playbook: playbooks/frontend.yml
+- import_playbook: playbooks/databases.yml

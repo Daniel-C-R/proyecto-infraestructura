@@ -1,0 +1,7 @@
+---
+- name: Configuracion para la asignatura de Desarrollo Frontend
+  hosts: frontend
+  become: true
+  roles:
+    - common
+    - frontend_tools
