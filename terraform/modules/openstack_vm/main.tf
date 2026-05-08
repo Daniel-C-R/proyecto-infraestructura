@@ -28,25 +28,4 @@ resource "openstack_compute_instance_v2" "this" {
     name = var.network_name
   }
 
-  user_data = <<-EOF
-    #cloud-config
-    users:
-      - name: ${var.admin_user}
-        lock_passwd: true
-        sudo: ALL=(ALL) NOPASSWD:ALL
-        groups: sudo
-        shell: /bin/bash
-        ssh-authorized-keys:
-          - ${var.public_key}
-    package_update: true
-    packages:
-      - python3
-      - qemu-guest-agent
-    ssh_pwauth: false
-    disable_root: true
-    timezone: ${var.timezone}
-    runcmd:
-      - systemctl enable qemu-guest-agent
-      - systemctl restart qemu-guest-agent
-  EOF
 }
