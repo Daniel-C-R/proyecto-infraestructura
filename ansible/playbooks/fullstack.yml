@@ -1,0 +1,9 @@
+---
+- name: Configuracion para la asignatura de Desarrollo Fullstack
+  hosts: fullstack
+  become: true
+  roles:
+    - common
+    - frontend_tools
+    - backend_tools
+    - mariadb

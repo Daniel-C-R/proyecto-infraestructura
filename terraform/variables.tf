@@ -51,6 +51,12 @@ variable "keypair_name" {
   type        = string
 }
 
+variable "deployment_name" {
+  description = "Prefijo opcional para nombrar recursos compartidos del despliegue."
+  type        = string
+  default     = null
+}
+
 variable "image_name" {
   description = "Nombre de la imagen base de OpenStack."
   type        = string
@@ -109,4 +115,12 @@ variable "instances" {
     extra_security_groups = optional(list(string), [])
     metadata              = optional(map(string), {})
   }))
+
+  validation {
+    condition = alltrue([
+      for instance in var.instances :
+      contains(["data_science", "frontend", "databases", "backend", "fullstack"], instance.subject)
+    ])
+    error_message = "Cada instancia debe usar un subject valido: data_science, frontend, databases, backend o fullstack."
+  }
 }

@@ -12,7 +12,7 @@ resource "openstack_compute_keypair_v2" "admin" {
 }
 
 resource "openstack_networking_secgroup_v2" "ssh" {
-  name        = "ssh-ingress"
+  name        = local.ssh_security_group_name
   description = "Permitir acceso SSH para la administracion"
 }
 
@@ -27,6 +27,7 @@ resource "openstack_networking_secgroup_rule_v2" "ssh_ingress" {
 }
 
 locals {
+  ssh_security_group_name    = var.deployment_name == null ? "ssh-ingress" : "${var.deployment_name}-ssh-ingress"
   instances_with_created_fip = var.create_floating_ips ? var.instances : {}
   instances_with_existing_fip = {
     for name, instance in var.instances :

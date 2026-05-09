@@ -1,0 +1,28 @@
+auth_url                      = "https://openstack.example/v3"
+application_credential_id     = "replace-me"
+application_credential_secret = "replace-me"
+domain_name                   = "Default"
+tenant_name                   = "admin"
+region                        = "RegionOne"
+
+public_key_path     = "/home/usuario/.ssh/facultad_admin.pub"
+private_key_path    = "/home/usuario/.ssh/facultad_admin"
+keypair_name        = "facultad-admin"
+image_name          = "Ubuntu-24.04"
+network_name        = "networks_uo288241"
+ssh_allowed_cidr    = "156.35.0.0/16"
+admin_user          = "admin"
+create_floating_ips = false
+
+instances = {
+  be-01 = {
+    subject             = "backend"
+    flavor_name         = "m2_medium_2"
+    student_public_keys = ["ssh-ed25519 AAAA_REEMPLAZAR_CON_CLAVE_PUBLICA alumno.be01"]
+  }
+  be-02 = {
+    subject             = "backend"
+    flavor_name         = "m2_medium_2"
+    student_public_keys = ["ssh-ed25519 BBBB_REEMPLAZAR_CON_CLAVE_PUBLICA alumno.be02"]
+  }
+}

@@ -13,3 +13,5 @@ groups:
   data_science: openstack.metadata.subject == 'data_science'
   frontend: openstack.metadata.subject == 'frontend'
   databases: openstack.metadata.subject == 'databases'
+  backend: openstack.metadata.subject == 'backend'
+  fullstack: openstack.metadata.subject == 'fullstack'

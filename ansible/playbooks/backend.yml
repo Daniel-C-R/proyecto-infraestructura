@@ -1,0 +1,7 @@
+---
+- name: Configuracion para la asignatura de Desarrollo Backend
+  hosts: backend
+  become: true
+  roles:
+    - common
+    - backend_tools

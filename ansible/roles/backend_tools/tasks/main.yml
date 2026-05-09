@@ -1,0 +1,27 @@
+---
+- name: Instalar herramientas para desarrollo backend
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - curl
+      - git
+      - httpie
+      - jq
+      - maven
+      - openjdk-21-jdk
+      - unzip
+    state: present
+
+- name: Instalar Gradle
+  ansible.builtin.apt:
+    name: gradle
+    state: present
+  when: backend_install_gradle | default(true)
+
+- name: Crear directorio de proyectos backend
+  ansible.builtin.file:
+    path: "/home/{{ common_student_user }}/backend"
+    state: directory
+    owner: "{{ common_student_user }}"
+    group: "{{ common_student_user }}"
+    mode: "0755"
