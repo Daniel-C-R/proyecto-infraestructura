@@ -16,11 +16,13 @@ create_floating_ips   = false
 
 instances = {
   db-01 = {
-    subject     = "databases"
-    flavor_name = "m2_medium_2"
+    subject             = "databases"
+    flavor_name         = "m2_medium_2"
+    student_public_keys = ["ssh-ed25519 AAAA_REEMPLAZAR_CON_CLAVE_PUBLICA alumno.db01"]
   }
   db-02 = {
-    subject     = "databases"
-    flavor_name = "m2_medium_2"
+    subject             = "databases"
+    flavor_name         = "m2_medium_2"
+    student_public_keys = ["ssh-ed25519 BBBB_REEMPLAZAR_CON_CLAVE_PUBLICA alumno.db02"]
   }
 }

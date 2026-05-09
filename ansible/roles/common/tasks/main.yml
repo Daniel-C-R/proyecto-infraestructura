@@ -1,4 +1,16 @@
 ---
+- name: Esperar a que SSH este disponible
+  ansible.builtin.wait_for_connection:
+    delay: 5
+    timeout: 300
+
+- name: Recoger facts
+  ansible.builtin.setup:
+
+- name: Resolver usuario alumno de la instancia
+  ansible.builtin.set_fact:
+    common_student_user: "{{ openstack.metadata.student_user if (openstack is defined and openstack.metadata is defined and openstack.metadata.student_user is defined) else common_student_user }}"
+
 - name: Actualizar cache de paquetes
   ansible.builtin.apt:
     update_cache: true

@@ -4,3 +4,4 @@
 *.tfstate.*
 *.tfvars
 terraform/.terraform.lock.hcl
+terraform/environments/student_keys/

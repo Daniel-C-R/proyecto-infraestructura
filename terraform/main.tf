@@ -8,7 +8,7 @@ data "openstack_networking_network_v2" "tenant_network" {
 
 resource "openstack_compute_keypair_v2" "admin" {
   name       = var.keypair_name
-  public_key = file(pathexpand(var.public_key_path))
+  public_key = trimspace(file(pathexpand(var.public_key_path)))
 }
 
 resource "openstack_networking_secgroup_v2" "ssh" {
@@ -39,18 +39,20 @@ module "vm" {
   source   = "./modules/openstack_vm"
   for_each = var.instances
 
-  name              = each.key
-  image_id          = data.openstack_images_image_v2.base_image.id
-  flavor_name       = each.value.flavor_name
-  network_name      = data.openstack_networking_network_v2.tenant_network.name
-  key_pair_name     = openstack_compute_keypair_v2.admin.name
-  security_groups   = concat(var.common_security_group_names, [openstack_networking_secgroup_v2.ssh.name], each.value.extra_security_groups)
-  admin_user        = var.admin_user
-  public_key        = file(pathexpand(var.public_key_path))
-  timezone          = var.timezone
-  subject           = each.value.subject
-  private_key_path  = pathexpand(var.private_key_path)
-  instance_metadata = each.value.metadata
+  name                = each.key
+  image_id            = data.openstack_images_image_v2.base_image.id
+  flavor_name         = each.value.flavor_name
+  network_name        = data.openstack_networking_network_v2.tenant_network.name
+  key_pair_name       = openstack_compute_keypair_v2.admin.name
+  security_groups     = concat(var.common_security_group_names, [openstack_networking_secgroup_v2.ssh.name], each.value.extra_security_groups)
+  admin_user          = var.admin_user
+  public_key          = trimspace(file(pathexpand(var.public_key_path)))
+  timezone            = var.timezone
+  subject             = each.value.subject
+  student_user        = each.value.student_user
+  student_public_keys = each.value.student_public_keys
+  private_key_path    = pathexpand(var.private_key_path)
+  instance_metadata   = each.value.metadata
 }
 
 data "openstack_networking_port_v2" "vm_port" {

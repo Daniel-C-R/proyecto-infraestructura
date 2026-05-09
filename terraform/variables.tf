@@ -105,6 +105,7 @@ variable "instances" {
     flavor_name           = string
     floating_ip           = optional(string)
     student_user          = optional(string, "alumno")
+    student_public_keys   = optional(list(string), [])
     extra_security_groups = optional(list(string), [])
     metadata              = optional(map(string), {})
   }))

@@ -92,8 +92,37 @@ Cada VM se define en `instances` y debe indicar al menos:
 
 - `subject`: `data_science`, `frontend` o `databases`
 - `flavor_name`
+- `student_public_keys`: claves publicas SSH autorizadas para el usuario alumno de esa VM
 
 Terraform copia ese `subject` como metadato de OpenStack y Ansible lo usa para decidir en que grupo cae cada instancia.
+
+## Acceso de alumnos
+
+Cada maquina crea un usuario de alumno, por defecto `alumno`, usando `cloud-init`. Para que un alumno solo pueda acceder a su propia VM, declara sus claves publicas SSH en la instancia correspondiente:
+
+```hcl
+instances = {
+  examen-alumno-001 = {
+    subject             = "data_science"
+    flavor_name         = "m2_medium_2"
+    student_public_keys = ["ssh-ed25519 AAAA... alumno001"]
+  }
+
+  examen-alumno-002 = {
+    subject             = "data_science"
+    flavor_name         = "m2_medium_2"
+    student_public_keys = ["ssh-ed25519 BBBB... alumno002"]
+  }
+}
+```
+
+Con esta configuracion, ambos alumnos se conectan como `alumno`, pero cada VM solo acepta la clave publica declarada para esa maquina:
+
+```bash
+ssh alumno@IP_DE_SU_VM
+```
+
+No reutilices la misma clave privada para todos los alumnos. Si la facultad genera las claves, genera un par distinto por alumno o por VM y entrega cada clave privada solo a su propietario.
 
 ## Red interna y floating IPs
 

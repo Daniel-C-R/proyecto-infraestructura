@@ -38,6 +38,15 @@ variable "subject" {
   type = string
 }
 
+variable "student_user" {
+  type = string
+}
+
+variable "student_public_keys" {
+  type    = list(string)
+  default = []
+}
+
 variable "private_key_path" {
   type = string
 }

@@ -1,0 +1,33 @@
+#cloud-config
+timezone: ${timezone}
+package_update: true
+packages:
+  - openssh-server
+  - python3
+  - qemu-guest-agent
+ssh_pwauth: false
+disable_root: true
+
+users:
+  - default
+  - name: ${admin_user}
+    groups:
+      - sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ${jsonencode(public_key)}
+  - name: ${student_user}
+    shell: /bin/bash
+    lock_passwd: true
+%{ if length(student_public_keys) > 0 ~}
+    ssh_authorized_keys:
+%{ for key in student_public_keys ~}
+      - ${jsonencode(key)}
+%{ endfor ~}
+%{ endif ~}
+
+runcmd:
+  - [systemctl, enable, --now, ssh]
+  - [systemctl, enable, --now, qemu-guest-agent]
