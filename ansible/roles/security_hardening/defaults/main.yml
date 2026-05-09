@@ -1,0 +1,19 @@
+---
+security_packages:
+  - fail2ban
+  - unattended-upgrades
+  - ufw
+
+security_enable_ufw: true
+security_allowed_tcp_ports:
+  - 22
+
+security_ssh_password_authentication: "no"
+security_ssh_permit_root_login: "no"
+security_ssh_pubkey_authentication: "yes"
+security_ssh_kbd_interactive_authentication: "no"
+security_ssh_x11_forwarding: "no"
+security_ssh_allow_agent_forwarding: "no"
+security_ssh_max_auth_tries: 4
+security_ssh_client_alive_interval: 300
+security_ssh_client_alive_count_max: 2

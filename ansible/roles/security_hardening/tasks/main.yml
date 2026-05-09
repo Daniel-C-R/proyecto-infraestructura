@@ -1,0 +1,125 @@
+---
+- name: Instalar paquetes de seguridad
+  ansible.builtin.apt:
+    name: "{{ security_packages }}"
+    state: present
+
+- name: Activar actualizaciones automaticas de seguridad
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+
+- name: Configurar hardening SSH
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/99-facultad-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      PasswordAuthentication {{ security_ssh_password_authentication }}
+      PermitRootLogin {{ security_ssh_permit_root_login }}
+      PubkeyAuthentication {{ security_ssh_pubkey_authentication }}
+      KbdInteractiveAuthentication {{ security_ssh_kbd_interactive_authentication }}
+      X11Forwarding {{ security_ssh_x11_forwarding }}
+      AllowAgentForwarding {{ security_ssh_allow_agent_forwarding }}
+      MaxAuthTries {{ security_ssh_max_auth_tries }}
+      ClientAliveInterval {{ security_ssh_client_alive_interval }}
+      ClientAliveCountMax {{ security_ssh_client_alive_count_max }}
+  notify:
+    - Validar configuracion SSH
+    - Recargar SSH
+
+- name: Bloquear contrasena del usuario alumno
+  ansible.builtin.user:
+    name: "{{ common_student_user }}"
+    password_lock: true
+
+- name: Asegurar permisos del home del alumno
+  ansible.builtin.file:
+    path: "/home/{{ common_student_user }}"
+    owner: "{{ common_student_user }}"
+    group: "{{ common_student_user }}"
+    mode: "0750"
+    state: directory
+
+- name: Asegurar permisos del directorio SSH del alumno
+  ansible.builtin.file:
+    path: "/home/{{ common_student_user }}/.ssh"
+    owner: "{{ common_student_user }}"
+    group: "{{ common_student_user }}"
+    mode: "0700"
+    state: directory
+
+- name: Comprobar si existe authorized_keys del alumno
+  ansible.builtin.stat:
+    path: "/home/{{ common_student_user }}/.ssh/authorized_keys"
+  register: security_student_authorized_keys
+
+- name: Asegurar permisos de authorized_keys del alumno
+  ansible.builtin.file:
+    path: "/home/{{ common_student_user }}/.ssh/authorized_keys"
+    owner: "{{ common_student_user }}"
+    group: "{{ common_student_user }}"
+    mode: "0600"
+    state: file
+  when: security_student_authorized_keys.stat.exists
+
+- name: Aplicar parametros de kernel basicos de seguridad
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/99-facultad-security.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      net.ipv4.conf.all.accept_redirects = 0
+      net.ipv4.conf.default.accept_redirects = 0
+      net.ipv4.conf.all.secure_redirects = 0
+      net.ipv4.conf.default.secure_redirects = 0
+      net.ipv4.conf.all.send_redirects = 0
+      net.ipv4.conf.default.send_redirects = 0
+      net.ipv4.conf.all.rp_filter = 1
+      net.ipv4.conf.default.rp_filter = 1
+      net.ipv4.icmp_echo_ignore_broadcasts = 1
+      net.ipv4.icmp_ignore_bogus_error_responses = 1
+  register: security_sysctl_config
+
+- name: Recargar parametros sysctl
+  ansible.builtin.command: sysctl --system
+  changed_when: security_sysctl_config.changed
+  when: security_sysctl_config.changed
+
+- name: Configurar politica UFW de entrada
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+  when: security_enable_ufw
+
+- name: Configurar politica UFW de salida
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+  when: security_enable_ufw
+
+- name: Permitir puertos TCP declarados
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop: "{{ security_allowed_tcp_ports }}"
+  when: security_enable_ufw
+
+- name: Activar UFW
+  community.general.ufw:
+    state: enabled
+  when: security_enable_ufw
+
+- name: Asegurar que fail2ban esta activo
+  ansible.builtin.systemd:
+    name: fail2ban
+    state: started
+    enabled: true

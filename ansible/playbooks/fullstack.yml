@@ -4,6 +4,7 @@
   become: true
   roles:
     - common
+    - security_hardening
     - frontend_tools
     - backend_tools
     - mariadb
