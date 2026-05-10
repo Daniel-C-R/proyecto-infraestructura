@@ -1,6 +1,6 @@
 TF_DIR=terraform
 ANSIBLE_DIR=ansible
-TFVARS?=environments/data_science_lab.tfvars
+TFVARS?=environments/my_environment.tfvars
 PLAYBOOK?=site.yml
 ANSIBLE_ENV=ANSIBLE_CONFIG=$(ANSIBLE_DIR)/ansible.cfg ANSIBLE_LOCAL_TEMP=/tmp/ansible-local ANSIBLE_REMOTE_TEMP=/tmp/ansible-remote
 
